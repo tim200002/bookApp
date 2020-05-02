@@ -2,10 +2,12 @@
 
 //Main REpository Should Handle all the Data later maybe also a specialized one
 //Repository is instantiated as a Singleton
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:book_app/model/book.dart';
 import 'package:book_app/model/bookList.dart';
+import 'package:http/http.dart' as http;
 
 class MainRepository {
   static final MainRepository _repo = new MainRepository._internal();
@@ -43,7 +45,7 @@ class MainRepository {
       await bookListDB.insert(bookList);
       return book.id;
     } catch (err) {
-      log(err);
+      log(err.toString());
       return null;
     }
   }
@@ -61,32 +63,32 @@ class MainRepository {
 
   //Get all Books sorted
   Future<List<Book>> getAllBooksSorted() async {
-    try{
-    //Check if DB COnnection opend
-    if (bookDB == null) await bookDB.open();
-    if (bookListDB == null) await bookListDB.open();
-    await bookDB.open();
-    await bookListDB.open();
-    //Get all active ELements
-    var bookList = await bookListDB.getAllActive();
-    //Therer are books
-    if (bookList != null) {
-      //Sort List in Ascending order:
-      bookList.sort((a, b) => a.position.compareTo(b.position));
+    try {
+      //Check if DB COnnection opend
+      if (bookDB == null) await bookDB.open();
+      if (bookListDB == null) await bookListDB.open();
+      await bookDB.open();
+      await bookListDB.open();
+      //Get all active ELements
+      var bookList = await bookListDB.getAllActive();
+      //Therer are books
+      if (bookList != null) {
+        //Sort List in Ascending order:
+        bookList.sort((a, b) => a.position.compareTo(b.position));
 
-      List<Book> books = List<Book>();
-      //Make a Book List
-      bookList.forEach((element) async {
-        books.add(await bookDB.getBookById(element.bookId));
-      });
-      return books;
-    }
-    //If not return empty list 
-    return [];
-    }
-    catch(err){
-      log(err);
-      return [];  //REturn empty null would crash application
+        List<Book> books = List<Book>();
+        //Make a Book List
+        bookList.forEach((element) async {
+          books.add(await bookDB.getBookById(element.bookId));
+        });
+        log("Bücher Liste ${books.length.toString()}");
+        return books;
+      }
+      //If not return empty list
+      return [];
+    } catch (err) {
+      log(err.toString());
+      return []; //Return empty null would crash application
     }
   }
 
@@ -98,6 +100,45 @@ class MainRepository {
     log(bookDB.db.toString());
     await bookDB.deleteAll();
     await bookListDB.deleteAll();
+  }
+
+  //Get Book by ISBN Using API
+  //! One could maybe remove this from Repository only called from unseude REpository
+  Future<Book> findBookByISBN(int ISBN) async {
+    try {
+      //Get Data from API
+      var response = await http.get(
+          "https://openlibrary.org/api/books?bibkeys=ISBN:$ISBN&jscmd=data&format=json");
+      if (response.statusCode != 200) {
+        throw ("Calling API failed");
+      }
+      else if (response.body == '{}') {
+        throw ("Book not found");
+      }
+      else{
+      //Map data to book
+      var myBook = Book.fromJson(json.decode(response.body), ISBN);
+      return myBook;}
+    } catch (err) {
+      log(err.toString());
+      return null; //Not Shure yet what to Return
+    }
+  }
+
+  Future<Book> addBookByIsbn(int ISBN) async {
+    try{
+    var myBook = await findBookByISBN(ISBN);
+    if(myBook!=null){
+    await addNewBook(myBook);
+    return myBook;
+    }
+    throw("Error book == null");
+    }
+    catch(err){
+      log(err.toString());
+      return null;
+
+    }
   }
 
 //This Logic is to Create Singleton

@@ -20,11 +20,11 @@ class BlocNewBook extends Bloc<NewBookEvents, NewBookStates>{
 
     //Lookup Book and Add it to the DB, later not directly add it
     if (event is EventLookForBook){
-      Book myBook=Book(author: "Paul Coelho", title: "Veronika beschließt zu sterben", ISBN: 3257233051, isRead: false,pages: 224);
-      repository.addNewBook(myBook);
+     repository.addBookByIsbn(event.ISBN);
     }
     if (event is TestEvent){
-      log((await repository.getBookByPosition(0)).toString());
+      await repository.deleteALL();
+      log("deleted");
     }
   }
 }
