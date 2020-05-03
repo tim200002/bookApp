@@ -35,14 +35,15 @@ class _ListScreenState extends State<ListScreen> {
                 children: <Widget>[
                   FlatButton(
                     child: Text("Page 1"),
-                    onPressed: (){
+                    onPressed: () {
                       Navigator.pop(context);
-                      BlocProvider.of<BasicNavigationBloc>(context).add(NavigateToMainScreen());
+                      BlocProvider.of<BasicNavigationBloc>(context)
+                          .add(NavigateToMainScreen());
                     },
                   ),
                   FlatButton(
                     child: Text("Page 2"),
-                    onPressed: (){
+                    onPressed: () {
                       Navigator.pop(context);
                     },
                   )
@@ -93,13 +94,21 @@ class _ListScreenState extends State<ListScreen> {
                       child: Text("Press to Add Book",
                           style: MyTextStyle.mediumHeadline),
                       onPressed: () {
-                        Navigator.of(context)
-                            .push(MaterialPageRoute(builder: (context) {
-                          return BlocProvider<BlocNewBook>(
-                            create: (BuildContext context) => BlocNewBook(),
-                            child: AddBookScreen(),
-                          );
-                        }));
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return BlocProvider<BlocNewBook>(
+                                create: (BuildContext context) => BlocNewBook(),
+                                child: AddBookScreen(),
+                              );
+                            },
+                          ),
+                        ).then((value){
+                          _blocBookList.add(EventLoadData()); //Load updatetd data when return to screen
+
+                          //Mybe better without extra call to DB
+                          //return added Book an Manually add it to bookList, then setState
+                        });
                       },
                     ),
                   )

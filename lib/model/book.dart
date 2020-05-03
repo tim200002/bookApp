@@ -64,7 +64,7 @@ class Book {
       ISBN: ISBN,
       author: isbn.authors[0].name,
       title: isbn.title,
-      pages: 100 //Change later
+      pages: isbn.numberOfPages //Change later
     );
   }
 }

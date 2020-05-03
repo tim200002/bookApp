@@ -77,11 +77,10 @@ class MainRepository {
         bookList.sort((a, b) => a.position.compareTo(b.position));
 
         List<Book> books = List<Book>();
-        //Make a Book List
-        bookList.forEach((element) async {
-          books.add(await bookDB.getBookById(element.bookId));
-        });
-        log("Bücher Liste ${books.length.toString()}");
+        //Needs to be for loop beacuse of await
+        for (var book in bookList){
+          books.add(await bookDB.getBookById(book.bookId));
+        }
         return books;
       }
       //If not return empty list
