@@ -149,9 +149,10 @@ class ISBNClass{
     var authorFromJson=json['authors'];
     var myauthors= new List<Author>();
     authorFromJson.forEach((auth){myauthors.add(Author.fromJson(auth));}); //Does this work otherweise for Each
-
+    String numberString=json["pagination"];
+    numberString=numberString.replaceAll(RegExp("[^0-9]"), '');
     //REturn ISBN
-    return ISBNClass(title: json["title"], numberOfPages: json["number_of_pages"], authors: myauthors);
+    return ISBNClass(title: json["title"], numberOfPages: int.parse(numberString), authors: myauthors);
   }
 }
 
