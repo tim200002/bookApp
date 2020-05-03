@@ -135,5 +135,20 @@ class BookListProvider {
   }
   //Update by Position
 
+  //Change Position Return Yes if all went well
+  Future<bool> changePosition(List<Book> bookList)async{
+    try{
+    for (int i=0; i<bookList.length;i++){
+      await db.update('book_list', {'position': i},where: 'bookId = ?', whereArgs: [bookList[i].id]);
+    }
+    return true;
+    }
+    catch(err){
+      log(err.toString());
+      return false;
+    }
+
+  }
+
   Future closeDB() async => db.close();
 }

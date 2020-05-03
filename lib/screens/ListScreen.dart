@@ -79,8 +79,9 @@ class _ListScreenState extends State<ListScreen> {
                         if (oldIndex > newIndex) {
                           state.books.removeAt(oldIndex + 1);
                         } else if (oldIndex < newIndex) {
-                          state.books.removeAt(oldIndex - 1);
+                          state.books.removeAt(oldIndex );
                         }
+                        _blocBookList.add(EventChangePosition(bookList: state.books));
                         //? Dont know if nice but at the moment needed to show change in list
                         setState(() {});
                       },

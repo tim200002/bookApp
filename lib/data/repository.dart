@@ -78,7 +78,7 @@ class MainRepository {
 
         List<Book> books = List<Book>();
         //Needs to be for loop beacuse of await
-        for (var book in bookList){
+        for (var book in bookList) {
           books.add(await bookDB.getBookById(book.bookId));
         }
         return books;
@@ -110,14 +110,13 @@ class MainRepository {
           "https://openlibrary.org/api/books?bibkeys=ISBN:$ISBN&jscmd=data&format=json");
       if (response.statusCode != 200) {
         throw ("Calling API failed");
-      }
-      else if (response.body == '{}') {
+      } else if (response.body == '{}') {
         throw ("Book not found");
+      } else {
+        //Map data to book
+        var myBook = Book.fromJson(json.decode(response.body), ISBN);
+        return myBook;
       }
-      else{
-      //Map data to book
-      var myBook = Book.fromJson(json.decode(response.body), ISBN);
-      return myBook;}
     } catch (err) {
       log(err.toString());
       return null; //Not Shure yet what to Return
@@ -125,18 +124,39 @@ class MainRepository {
   }
 
   Future<Book> addBookByIsbn(int ISBN) async {
-    try{
-    var myBook = await findBookByISBN(ISBN);
-    if(myBook!=null){
-    await addNewBook(myBook);
-    return myBook;
+    try {
+      if (bookDB == null) await bookDB.open();
+      if (bookListDB == null) await bookListDB.open();
+      var myBook = await findBookByISBN(ISBN);
+      if (myBook != null) {
+        await addNewBook(myBook);
+        return myBook;
+      }
+      throw ("Error book == null");
+    } catch (err) {
+      log(err.toString());
+      return null;
     }
-    throw("Error book == null");
+  }
+
+  Future<bool> updatePosition(List<Book> books) async {
+    try {
+      if (bookListDB == null) await bookListDB.open();
+      return await bookListDB.changePosition(books);
+      
+
+    } catch (err) {
+      return false;
+    }
+  }
+  Future<int> updateBook(Book myBook)async{
+    try{
+      if (bookDB==null)await bookDB.open();
+      return await bookDB.updateBook(myBook);
     }
     catch(err){
       log(err.toString());
       return null;
-
     }
   }
 

@@ -123,7 +123,7 @@ class BookProvider {
   }
 
   //! No Error Handlig yet
-  Future<int> updateById(Book book)async{
+  Future<int> updateBook(Book book)async{
     return await db.update("book", book.toMap(),where: 'id = ?', whereArgs: [book.id]);
   }
 

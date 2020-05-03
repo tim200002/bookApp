@@ -26,5 +26,8 @@ class BlocHomeScreen extends Bloc<HomeEvents, HomeStates>{
        yield ShowData(books: books);
 
     }
+    if (event is EventBookUpdate){
+      repository.updateBook(event.myBook);
+    }
   }
 }

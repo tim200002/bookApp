@@ -61,8 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       child: ListView.builder(
                         itemCount: state.books.length,
                         itemBuilder: (BuildContext ctxt, int index) {
-                          return bigBookTile(book: state.books[index]);
-                        }),
+                          return bigBookTile(book: state.books[index]);                 }),
                   ),
                 ],
               ),
