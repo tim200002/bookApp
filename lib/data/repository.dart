@@ -7,6 +7,7 @@ import 'dart:developer';
 
 import 'package:book_app/model/book.dart';
 import 'package:book_app/model/bookList.dart';
+import 'package:book_app/model/statistics.dart';
 import 'package:http/http.dart' as http;
 
 class MainRepository {
@@ -16,14 +17,15 @@ class MainRepository {
 
   BookProvider bookDB = BookProvider();
   BookListProvider bookListDB = BookListProvider();
+  StatisticProvider statisticDB=StatisticProvider();
 
   //Add a Book to the Book DB and Create an Entry in the Book List
   Future<int> addNewBook(Book book) async {
     try {
       //Check if DB COnnection opend
       //! Check again
-      if (bookDB == null) await bookDB.open();
-      if (bookListDB == null) await bookListDB.open();
+      if (bookDB.db == null) await bookDB.open();
+      if (bookListDB.db == null) await bookListDB.open();
       await bookDB.open();
       await bookListDB.open();
 
@@ -96,9 +98,10 @@ class MainRepository {
     if (bookListDB == null) await bookListDB.open();
     await bookDB.open();
     await bookListDB.open();
-    log(bookDB.db.toString());
+    await statisticDB.open();
     await bookDB.deleteAll();
     await bookListDB.deleteAll();
+    await statisticDB.deleteAll();
   }
 
   //Get Book by ISBN Using API
@@ -158,6 +161,30 @@ class MainRepository {
       log(err.toString());
       return null;
     }
+  }
+  Future<Book> getBookById(int id)async{
+    await bookDB.open();
+    return await bookDB.getBookById(id);
+  }
+
+  Future<Statistic> getStatisticsByDate(String date)async{
+    if(statisticDB==null) await statisticDB.open();
+    await statisticDB.open();
+    return await statisticDB.getStatisticByDate(date);
+  }
+  Future<int> updateRead(int read)async{
+    await statisticDB.open();
+    Statistic old=await statisticDB.getStatisticByDate(DateTime.now().toString().substring(0,10));
+    old.pagesRead+=read;
+    return statisticDB.updateStatistic(old);
+  }
+
+  Future<Statistic> addStatisticWithPagesToRead(int pagesToRead)async{
+    if(statisticDB==null) await statisticDB.open();
+    await statisticDB.open();
+    Statistic stat=Statistic(date: DateTime.now().toString().substring(0,10),pagesRead: 0,pagesToRead: pagesToRead
+    );
+    return await statisticDB.insert(stat);
   }
 
 //This Logic is to Create Singleton

@@ -11,8 +11,6 @@ class Loading extends HomeStates{}
 class ShowData extends HomeStates{
    List<Book> books;  //List of all the Books to Show
    //!Hard Coded at the Moment just for sytle
-   int pagesToRead=20;
-   int pagesRead=1000;
-
-   ShowData({@required this.books});
+   int pagesOpen;
+   ShowData({@required this.books, this.pagesOpen});
 }

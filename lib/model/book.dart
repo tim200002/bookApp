@@ -82,7 +82,6 @@ class BookProvider {
           .execute('''create table book (id integer primary key autoincrement,
           author text, title text, pages integer, ISBN integer not null, currentPage integer, isRead integer)''');
     });
-    log(db.toString());
   }
   //Insert a book in the DB returns ID oft the book
   //! No Error Handling yet
@@ -105,7 +104,7 @@ class BookProvider {
     return null;
     }
     catch(error){
-      log(error);
+      log(error.toString());
           //Error
       return null;
     }
