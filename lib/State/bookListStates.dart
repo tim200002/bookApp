@@ -3,8 +3,7 @@ import 'package:flutter/cupertino.dart';
 
 abstract class BookListStates{}
 
-//State while making Calls and Loading Data
-class FetchingData extends BookListStates{}
+
 
 //State when Data is Loaded and one can Display Data
 class ShowData extends BookListStates{
@@ -12,4 +11,6 @@ class ShowData extends BookListStates{
 
   ShowData({@required this.books});
 }
+
+//State while making Calls and Loading Data
 class Loading extends BookListStates{}

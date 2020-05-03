@@ -50,9 +50,23 @@ class Book {
         pages= map['pages'];
         ISBN= map['ISBN'];
         currentPage= map['currentPage'];
-        isRead= map['isRead']==1; //Convert int back to bool
-  
-}
+        isRead= map['isRead']==1; //Convert int back to bool 
+  }
+  //Why factory
+  factory Book.fromJson(Map<String,dynamic>json,int ISBN){
+
+    //Wee first Need to Create an ISBN object because of the Structure of the response
+    var isbn=ISBNClass.fromJson(json['ISBN:$ISBN']);
+
+    //Chang Pages to number
+    
+    return Book(
+      ISBN: ISBN,
+      author: isbn.authors[0].name,
+      title: isbn.title,
+      pages: isbn.numberOfPages //Change later
+    );
+  }
 }
 
 class BookProvider {
@@ -114,4 +128,39 @@ class BookProvider {
   }
 
   Future closeDB() async=>db.close();
+}
+
+
+
+
+//! Helper Classes to Convert Json from API Call to Instance of Book
+
+//Reads almost all Json
+class ISBNClass{
+  String title;
+  int numberOfPages;
+  List<Author> authors;
+
+  ISBNClass({this.title,this.numberOfPages,this.authors});
+
+  factory ISBNClass.fromJson(Map<String, dynamic>json){
+
+    //Create the List of authors
+    var authorFromJson=json['authors'];
+    var myauthors= new List<Author>();
+    authorFromJson.forEach((auth){myauthors.add(Author.fromJson(auth));}); //Does this work otherweise for Each
+    String numberString=json["pagination"];
+    numberString=numberString.replaceAll(RegExp("[^0-9]"), '');
+    //REturn ISBN
+    return ISBNClass(title: json["title"], numberOfPages: int.parse(numberString), authors: myauthors);
+  }
+}
+
+//Authors are nestes in Json therefor this class
+class Author{
+  String name;
+  Author({this.name});
+  factory Author.fromJson(Map<String,dynamic> json){
+    return Author(name: json['name']);
+  }
 }

@@ -16,7 +16,7 @@ class StateListScreen extends NavigationStates{}
 
 class BasicNavigationBloc extends Bloc<NavigationEvents,NavigationStates>{
   @override
-  NavigationStates get initialState=>StateListScreen();
+  NavigationStates get initialState=>StateMainScreen();
 
   @override
   Stream<NavigationStates> mapEventToState(NavigationEvents event) async*{
