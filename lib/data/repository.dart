@@ -26,8 +26,6 @@ class MainRepository {
       //! Check again
       if (bookDB.db == null) await bookDB.open();
       if (bookListDB.db == null) await bookListDB.open();
-      await bookDB.open();
-      await bookListDB.open();
 
       //Search for highest positioon in Book Database to Add Book at right place
       var allBooks = await bookListDB.getAllActive();
@@ -56,8 +54,8 @@ class MainRepository {
   //Later Error Handling with invalid IDs important
   Future<Book> getBookByPosition(int pos) async {
     //Check if DB COnnection opend
-    if (bookDB == null) await bookDB.open();
-    if (bookListDB == null) await bookListDB.open();
+    if (bookDB.db == null) await bookDB.open();
+    if (bookListDB.db == null) await bookListDB.open();
 
     int bookId = (await bookListDB.getBookListByPosition(0)).bookId;
     return await bookDB.getBookById(bookId);
@@ -67,10 +65,8 @@ class MainRepository {
   Future<List<Book>> getAllBooksSorted() async {
     try {
       //Check if DB COnnection opend
-      if (bookDB == null) await bookDB.open();
-      if (bookListDB == null) await bookListDB.open();
-      await bookDB.open();
-      await bookListDB.open();
+      if (bookDB.db == null) await bookDB.open();
+      if (bookListDB.db == null) await bookListDB.open();
       //Get all active ELements
       var bookList = await bookListDB.getAllActive();
       //Therer are books
@@ -94,11 +90,9 @@ class MainRepository {
   }
 
   deleteALL() async {
-    if (bookDB == null) await bookDB.open();
-    if (bookListDB == null) await bookListDB.open();
-    await bookDB.open();
-    await bookListDB.open();
-    await statisticDB.open();
+    if (bookDB.db == null) await bookDB.open();
+    if (bookListDB.db == null) await bookListDB.open();
+    if(statisticDB.db==null)await statisticDB.open();
     await bookDB.deleteAll();
     await bookListDB.deleteAll();
     await statisticDB.deleteAll();
@@ -128,8 +122,8 @@ class MainRepository {
 
   Future<Book> addBookByIsbn(int ISBN) async {
     try {
-      if (bookDB == null) await bookDB.open();
-      if (bookListDB == null) await bookListDB.open();
+      if (bookDB.db == null) await bookDB.open();
+      if (bookListDB.db == null) await bookListDB.open();
       var myBook = await findBookByISBN(ISBN);
       if (myBook != null) {
         await addNewBook(myBook);
@@ -144,7 +138,7 @@ class MainRepository {
 
   Future<bool> updatePosition(List<Book> books) async {
     try {
-      if (bookListDB == null) await bookListDB.open();
+      if (bookListDB.db == null) await bookListDB.open();
       return await bookListDB.changePosition(books);
       
 
@@ -154,7 +148,7 @@ class MainRepository {
   }
   Future<int> updateBook(Book myBook)async{
     try{
-      if (bookDB==null)await bookDB.open();
+      if (bookDB.db==null)await bookDB.open();
       return await bookDB.updateBook(myBook);
     }
     catch(err){
@@ -163,25 +157,23 @@ class MainRepository {
     }
   }
   Future<Book> getBookById(int id)async{
-    await bookDB.open();
+    if(bookDB.db==null)await bookDB.open();
     return await bookDB.getBookById(id);
   }
 
   Future<Statistic> getStatisticsByDate(String date)async{
-    if(statisticDB==null) await statisticDB.open();
-    await statisticDB.open();
+    if(statisticDB.db==null) await statisticDB.open();
     return await statisticDB.getStatisticByDate(date);
   }
   Future<int> updateRead(int read)async{
-    await statisticDB.open();
+    if (statisticDB.db==null)await statisticDB.open();
     Statistic old=await statisticDB.getStatisticByDate(DateTime.now().toString().substring(0,10));
     old.pagesRead+=read;
     return statisticDB.updateStatistic(old);
   }
 
   Future<Statistic> addStatisticWithPagesToRead(int pagesToRead)async{
-    if(statisticDB==null) await statisticDB.open();
-    await statisticDB.open();
+    if(statisticDB.db==null) await statisticDB.open();
     Statistic stat=Statistic(date: DateTime.now().toString().substring(0,10),pagesRead: 0,pagesToRead: pagesToRead
     );
     return await statisticDB.insert(stat);
