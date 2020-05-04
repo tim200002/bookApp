@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:book_app/Bloc/BlocHomeScreen.dart';
 import 'package:book_app/Event/EventHomeScreen.dart';
+import 'package:book_app/State/StateHomeScreen.dart';
 import 'package:book_app/Styling/TextStyling.dart';
 import 'package:book_app/Styling/colors.dart';
 import 'package:book_app/model/book.dart';
@@ -52,39 +53,28 @@ class _bigBookTileState extends State<bigBookTile> {
               height: 25,
             ),
             //Column for Progress and both Buttons
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.end,
+            Stack(
+              alignment: AlignmentDirectional.bottomCenter,
               children: <Widget>[
-                RaisedButton(
-                    onPressed: () {
-                      if (widget.book.currentPage > 1) {
-                        widget.book.currentPage--;
-                        BlocProvider.of<BlocHomeScreen>(context)
-                            .add(EventBookUpdate(myBook: widget.book));
-                        setState(() {});
-                      }
-                    },
-                    child: Text(
-                      "-",
-                      style: MyTextStyle.iconStyle,
-                    ),
-                    shape: CircleBorder()),
-
-                //Progress Thing
-                //!Redesign maybe stack with Buttons and Circular thing
-                Expanded(
-                  child: Container(
-                    height: 150,
-                    child: Stack(
-                      children: <Widget>[
-                        CircularProgress(
-                            animationDuration: Duration(milliseconds: 500),
-                            backgroundColor: MyColors.progressNotColor,
-                            foregroundColor: MyColors.progressDoneColor,
-                            currentPage: widget.book.currentPage,
-                            pages: widget.book.pages),
-                        GestureDetector(
+                //Progress Bar etc
+                Container(
+                  //color: Colors.red,
+                  height: 210,
+                  child: Stack(
+                    alignment: AlignmentDirectional.center,
+                    children: <Widget>[
+                      CircularProgress(
+                          animationDuration: Duration(milliseconds: 500),
+                          backgroundColor: MyColors.progressNotColor,
+                          foregroundColor: MyColors.progressDoneColor,
+                          currentPage: widget.book.currentPage,
+                          pages: widget.book.pages),
+                      Container(
+                        //color: Colors.blue,
+                        width:
+                            140, //Hard Coeded for Good Alignment of Gesture Detector
+                        height: 160,
+                        child: GestureDetector(
                           onTap: () {
                             log("Hello");
                             showCupertinoModalPopup(
@@ -111,67 +101,52 @@ class _bigBookTileState extends State<bigBookTile> {
                               setState(() {});
                             }); //After Closed Call Bloc and Update Screen
                           },
-                        )
-                      ],
-                    ),
+                        ),
+                      )
+                    ],
                   ),
                 ),
-
-                //Plus Circle
-                RaisedButton(
-                    onPressed: () {
-                      if (widget.book.currentPage < widget.book.pages) {
-                        widget.book.currentPage++;
-                        BlocProvider.of<BlocHomeScreen>(context)
-                            .add(EventBookUpdate(myBook: widget.book));
-                        setState(() {});
-                      }
-                    },
-                    child: Text(
-                      "+",
-                      style: MyTextStyle.iconStyle,
-                    ),
-                    shape: CircleBorder()),
+                //Minus Button
+                Align(alignment: Alignment.bottomLeft,
+                                  child: RaisedButton(
+                      onPressed: () {
+                        if (widget.book.currentPage > 1) {
+                          widget.book.currentPage--;
+                          BlocProvider.of<BlocHomeScreen>(context)
+                              .add(EventBookUpdate(myBook: widget.book));
+                          setState(() {});
+                        }
+                      },
+                      child: Text(
+                        "-",
+                        style: MyTextStyle.iconStyle,
+                      ),
+                      shape: CircleBorder()),
+                ),
+                //Plus Button
+                 Align(
+                   alignment: Alignment.bottomRight,
+                                    child: RaisedButton(
+                                      
+                      onPressed: () {
+                        if (widget.book.currentPage < widget.book.pages) {
+                          widget.book.currentPage++;
+                          BlocProvider.of<BlocHomeScreen>(context)
+                              .add(EventBookUpdate(myBook: widget.book));
+                          setState(() {});
+                        }
+                      },
+                      child: Text(
+                        "+",
+                        style: MyTextStyle.iconStyle,
+                      ),
+                      shape: CircleBorder()),
+                 ),
               ],
-            ),
+            )
           ],
         ),
       ),
     );
   }
 }
-/*
-GestureDetector(
-                  onTap: () {
-                    log("Hello");
-                    showCupertinoModalPopup(
-                        context: context,
-                        builder: (BuildContext context) => CupertinoPicker(
-                              itemExtent: 50,
-                              onSelectedItemChanged: (int i) {
-                                widget.book.currentPage = i + 1;
-                                setState(() {}); //Later over bloc
-                              }, //later
-                              children: <Widget>[
-                                Text("1"),
-                                Text("2"),
-                                Text("3")
-                              ],
-                            ));
-                  },
-                  child: Container(
-                    height: 200,
-                    child: GestureDetector(
-                      onTap: () {
-                        log("Hello");
-                      },
-                      child: CircularProgress(
-                          animationDuration: Duration(milliseconds: 500),
-                          backgroundColor: MyColors.progressNotColor,
-                          foregroundColor: MyColors.progressDoneColor,
-                          currentPage: widget.book.currentPage,
-                          pages: widget.book.pages),
-                    ),
-                  ),
-                ),
-*/

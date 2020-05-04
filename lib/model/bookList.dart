@@ -129,6 +129,11 @@ class BookListProvider {
     return await db.delete('book_list', where: 'id = ?', whereArgs: [id]);
   }
 
+    //Delete byBook Id
+  Future<int> deleteByBookId(int id) async {
+    return await db.delete('book_list', where: 'bookId = ?', whereArgs: [id]);
+  }
+
   //Delete All Entries:
   Future<int> deleteAll() async {
     return await db.delete("book_list");

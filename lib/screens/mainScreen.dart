@@ -11,7 +11,9 @@ import 'package:book_app/widgets/bigBookTile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+
 class HomeScreen extends StatefulWidget {
+  
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -28,24 +30,28 @@ class _HomeScreenState extends State<HomeScreen> {
           _blocHomeScreen.add(EventLoadData());
           return Scaffold(body: Text("Loading 3"));
         } else if (state is ShowData) {
+          
           return Scaffold(
-            appBar: AppBar(), //At The Moment for App Drawer
+            appBar: AppBar(elevation: 0.0,backgroundColor: MyColors.backgroundGrey), //At The Moment for App Drawer
             drawer: Drawer(
-              child: Column(
-                children: <Widget>[
-                  FlatButton(
-                    child: Text("Page 1"),
-                    onPressed: () {},
-                  ),
-                  FlatButton(
-                    child: Text("Page 2"),
-                    onPressed: () {
-                      Navigator.pop(context);
-                      BlocProvider.of<BasicNavigationBloc>(context)
-                          .add(NavigateToListScreen());
-                    },
-                  )
-                ],
+              
+              child: SafeArea(
+                              child: Column(
+                  children: <Widget>[
+                    FlatButton(
+                      child: Text("Page 1"),
+                      onPressed: () {},
+                    ),
+                    FlatButton(
+                      child: Text("Page 2"),
+                      onPressed: () {
+                        Navigator.pop(context);
+                        BlocProvider.of<BasicNavigationBloc>(context)
+                            .add(NavigateToListScreen());
+                      },
+                    )
+                  ],
+                ),
               ),
             ),
             body: SafeArea(
@@ -66,6 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             "You have to read",
                             style: MyTextStyle.mediumHeadline,
                           ),
+                          
                           Text(state.pagesOpen.toString(), style: MyTextStyle.bigHeadline,),
                           Text("Pages Today",style: MyTextStyle.mediumHeadline,),
                           Text("ps: you already read 2000 pages", style: MyTextStyle.smallText,)

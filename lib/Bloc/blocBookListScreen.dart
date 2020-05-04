@@ -26,5 +26,8 @@ class BlocBookList extends Bloc<BookListEvents, BookListStates>{
     else if (event is EventChangePosition){
       await repository.updatePosition(event.bookList);
     }
+    else if (event is EventDeleteBook){
+      await repository.deleteBookByID(event.myBook.id);
+    }
   }
 }

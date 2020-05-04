@@ -89,10 +89,38 @@ class MainRepository {
     }
   }
 
+  //Returns all the pages to Read (index 0) and today pages to Read (index 1)
+  Future<List<int>> getTodaysPagesToRead()async{
+          //Check if DB COnnection opend
+      if (bookDB.db == null) await bookDB.open();
+      if (bookListDB.db == null) await bookListDB.open();
+      List<int> pagesToRead=[0,0]; //Counter
+      //Get all active ELements
+      //Get all active ELements
+      var bookList = await bookListDB.getAllActive();
+      //Therer are books
+      if (bookList!=null){
+        for(var bookEntry in bookList){
+          var book=await bookDB.getBookById(bookEntry.bookId);
+          pagesToRead[0]+=(book.pages-book.currentPage)+1; //+1 Alleen Problem
+        }
+      }
+      log(DateTime.now().difference(new DateTime.utc(DateTime.now().year+1,0,0)).inDays.toString());
+      pagesToRead[1]=(pagesToRead[0]~/((DateTime.now().difference(new DateTime.utc(DateTime.now().year+1,0,0)).inDays))*-1);
+      return pagesToRead;
+      
+  }
+  Future deleteBookByID(int id)async{
+      if (bookDB.db == null) await bookDB.open();
+      if (bookListDB.db == null) await bookListDB.open();
+      await bookListDB.deleteByBookId(id);
+      await bookDB.deleteById(id);
+  }
+
   deleteALL() async {
     if (bookDB.db == null) await bookDB.open();
     if (bookListDB.db == null) await bookListDB.open();
-    if(statisticDB.db==null)await statisticDB.open();
+    if(statisticDB.db== null)await statisticDB.open();
     await bookDB.deleteAll();
     await bookListDB.deleteAll();
     await statisticDB.deleteAll();

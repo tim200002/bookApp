@@ -32,15 +32,18 @@ class _AddBookScreenState extends State<AddBookScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                 
-                  Text(
-                    "Enter ISBN to Add Book",
-                    style: MyTextStyle.bigHeadline,
-                    textAlign: TextAlign.center,
+                  Padding(
+                    padding: const EdgeInsets.only(top:15.0,bottom: 10),
+                    child: Text(
+                      "Enter ISBN to Add Book",
+                      style: MyTextStyle.bigHeadline,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                   //Input Field, later evtl. QR
 
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.only(top:8.0, bottom: 8.0, left: 20, right: 20),
                     child: TextField(
                       decoration: InputDecoration(border: OutlineInputBorder(),
                       labelText: "Enter ISBN"),

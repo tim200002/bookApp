@@ -17,3 +17,10 @@ class EventChangePosition extends BookListEvents{
   EventChangePosition({@required this.bookList});
 
 }
+
+class EventDeleteBook extends BookListEvents{
+ Book myBook;
+  
+  EventDeleteBook({@required this.myBook});
+
+}

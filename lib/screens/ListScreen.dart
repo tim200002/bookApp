@@ -29,25 +29,27 @@ class _ListScreenState extends State<ListScreen> {
           return Scaffold(body: Text("Loading"));
         } else if (state is ShowData) {
           return Scaffold(
-            appBar: AppBar(), //At the Moment Necessary for Drawe
+            appBar: AppBar(elevation: 0.0,backgroundColor: MyColors.backgroundGrey), //At the Moment Necessary for Drawe
             drawer: Drawer(
-              child: Column(
-                children: <Widget>[
-                  FlatButton(
-                    child: Text("Page 1"),
-                    onPressed: () {
-                      Navigator.pop(context);
-                      BlocProvider.of<BasicNavigationBloc>(context)
-                          .add(NavigateToMainScreen());
-                    },
-                  ),
-                  FlatButton(
-                    child: Text("Page 2"),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  )
-                ],
+              child: SafeArea(
+                              child: Column(
+                  children: <Widget>[
+                    FlatButton(
+                      child: Text("Page 1"),
+                      onPressed: () {
+                        Navigator.pop(context);
+                        BlocProvider.of<BasicNavigationBloc>(context)
+                            .add(NavigateToMainScreen());
+                      },
+                    ),
+                    FlatButton(
+                      child: Text("Page 2"),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    )
+                  ],
+                ),
               ),
             ),
             body: SafeArea(
@@ -55,7 +57,7 @@ class _ListScreenState extends State<ListScreen> {
                 children: <Widget>[
                   //Headline
                   Padding(
-                    padding: const EdgeInsets.all(10.0),
+                    padding: const EdgeInsets.only(bottom: 10.0),
                     child: Text(
                       "Order Your Library",
                       style: MyTextStyle.bigHeadline,
