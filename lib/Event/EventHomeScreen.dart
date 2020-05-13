@@ -1,4 +1,5 @@
 
+import 'package:book_app/State/StateHomeScreen.dart';
 import 'package:book_app/model/book.dart';
 import 'package:flutter/material.dart';
 
@@ -11,4 +12,10 @@ class EventLoadData extends HomeEvents{}
 class EventBookUpdate extends HomeEvents{
   Book myBook;
   EventBookUpdate({@required this.myBook});
+}
+
+//Event when book finished
+class EventBookFinished extends HomeEvents{
+  Book myBook;
+  EventBookFinished({@required this.myBook});
 }

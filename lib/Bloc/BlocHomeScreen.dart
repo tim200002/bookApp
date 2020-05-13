@@ -7,6 +7,8 @@ import 'package:book_app/model/book.dart';
 import 'package:book_app/model/statistics.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+
+//Bloc for the MAin Screen
 class BlocHomeScreen extends Bloc<HomeEvents, HomeStates> {
   var repository = MainRepository();
   @override
@@ -15,35 +17,45 @@ class BlocHomeScreen extends Bloc<HomeEvents, HomeStates> {
   @override
   Stream<HomeStates> mapEventToState(HomeEvents event) async* {
     if (event is EventLoadData) {
-      int readLeft;
+      int readLeft; //Couter for how much to Read today
       yield Loading();
-
       //Repository Function which returns List of all the Books
       List<Book> books = await repository.getAllBooksSorted();
-      String date = DateTime.now().toString().substring(0, 10);
-      Statistic statistic = await repository.getStatisticsByDate(date);
-      //NewDate
+      String date = DateTime.now().toString().substring(0, 10); //Format Date Time in Format used in Database
+      Statistic statistic = await repository.getStatisticsByDate(date); //Call to Statisitc Database to look how many pages already read and have to Read
+
+      //Case New Day -> No Statistic for Current Day
       if (statistic == null) {
-        //Add Element with Pages to Read
+        //Add Element with Pages to Read -> Oages To Read = All Pages / Days left in the Year
         statistic =await repository.addStatisticWithPagesToRead((await repository.getTodaysPagesToRead())[1]);
-      } else {
-        //Pages to Read Today pagestoRead-pagesRead größer 0
-        log(statistic.toString());
-      }
+      } 
+      // Not all Pages Read for Today
       if (statistic.pagesRead < statistic.pagesToRead)
         readLeft = statistic.pagesToRead - statistic.pagesRead;
-      else
+      else //Dont want negative Counter
         readLeft = 0;
+
+      //End Show Screen
       yield ShowData(books: books, pagesOpen: readLeft);
     }
-    if (event is EventBookUpdate) {
-      int lastPages =
-          (await repository.getBookById(event.myBook.id)).currentPage;
-      await repository.updateBook(event.myBook);
-      int newPages =
-          (await repository.getBookById(event.myBook.id)).currentPage;
+
+    //Update the Pages Read today
+    else if (event is EventBookUpdate) {
+      int lastPages = 
+          (await repository.getBookById(event.myBook.id)).currentPage; //last Value of Read pages
+      await repository.updateBook(event.myBook); //my book already has new Pages
+      int newPages =      event.myBook.currentPage;
+         // (await repository.getBookById(event.myBook.id)).currentPage;
       await repository.updateRead(newPages -
-          lastPages); //! Not ideal place because doesent change instantly
+          lastPages);//Updates Pages in Todays statistic entry //! Not ideal place because doesent change instantly -> can not to Bloc Call Every Time Counter could get extra BLoc or get Data directly in UI
+    }
+    
+    else if (event is EventBookFinished){
+      yield Loading();
+      await repository.finishBook(event.myBook);
+      EventLoadData();
+      
     }
   }
+
 }

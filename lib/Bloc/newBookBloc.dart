@@ -9,6 +9,8 @@ import 'package:book_app/model/book.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+
+//Bloc whicht Creates New book
 class BlocNewBook extends Bloc<NewBookEvents, NewBookStates>{
       var repository=MainRepository();
   
@@ -22,6 +24,7 @@ class BlocNewBook extends Bloc<NewBookEvents, NewBookStates>{
     if (event is EventLookForBook){
      repository.addBookByIsbn(event.ISBN);
     }
+    //Gets Deleted later
     if (event is TestEvent){
       await repository.deleteALL();
       log("deleted");

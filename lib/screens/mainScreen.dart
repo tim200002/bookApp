@@ -68,14 +68,26 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       child: Column(
                         children: <Widget>[
-                          Text(
-                            "You have to read",
-                            style: MyTextStyle.mediumHeadline,
+                          Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: Text(
+                              "You have to read",
+                              style: MyTextStyle.mediumHeadline,
+                            ),
                           ),
                           
-                          Text(state.pagesOpen.toString(), style: MyTextStyle.bigHeadline,),
-                          Text("Pages Today",style: MyTextStyle.mediumHeadline,),
-                          Text("ps: you already read 2000 pages", style: MyTextStyle.smallText,)
+                          Padding(
+                            padding: const EdgeInsets.all(.0),
+                            child: Text(state.pagesOpen.toString(), style: MyTextStyle.bigHeadline,),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: Text("Pages Today",style: MyTextStyle.mediumHeadline,),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: Text("ps: you already read 2000 pages", style: MyTextStyle.smallText,),
+                          )
                         ],
                       ),
                     ),

@@ -24,6 +24,30 @@ class bigBookTile extends StatefulWidget {
 }
 
 class _bigBookTileState extends State<bigBookTile> {
+  void _showBookFinishDialog(Book book, BuildContext blocContext) {
+    showCupertinoDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return CupertinoAlertDialog(
+            title: Text("Do you want to finish that Book"),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Finish"),
+                onPressed: () {
+                  BlocProvider.of<BlocHomeScreen>(blocContext)
+                      .add(EventBookFinished(myBook: book));
+                  Navigator.pop(context);
+                },
+              ),
+              FlatButton(
+                child: Text("I am still reading"),
+                onPressed: () {},
+              )
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -76,29 +100,62 @@ class _bigBookTileState extends State<bigBookTile> {
                         height: 160,
                         child: GestureDetector(
                           onTap: () {
-                            log("Hello");
-                            showCupertinoModalPopup(
+                            showModalBottomSheet(
                                 context: context,
-                                builder: (BuildContext context) =>
-                                    CupertinoPicker(
-                                      scrollController:
-                                          FixedExtentScrollController(
-                                              initialItem:
-                                                  widget.book.currentPage - 1),
-                                      itemExtent: 30, //Abstand zwischen items
-                                      onSelectedItemChanged: (int i) {
-                                        widget.book.currentPage = i + 1;
-                                      }, //later
-                                      children: <Widget>[
-                                        for (int i = 1;
-                                            i <= widget.book.pages;
-                                            ++i)
-                                          Text("$i")
-                                      ],
+                                builder: (BuildContext context) => Container(
+                                      color: Colors.white,
+                                      child: Column(
+                                        children: <Widget>[
+                                          Align(
+                                            child: FlatButton(
+                                              child: Text("Finish"),
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                            ),
+                                            alignment:
+                                                AlignmentDirectional.topEnd,
+                                          ),
+                                          Expanded(
+                                            child: CupertinoPicker(
+                                              scrollController:
+                                                  FixedExtentScrollController(
+                                                      initialItem: widget.book
+                                                              .currentPage -
+                                                          1),
+                                              itemExtent:
+                                                  40, //Abstand zwischen items
+                                              onSelectedItemChanged: (int i) {
+                                                widget.book.currentPage = i + 1;
+                                              }, //later
+                                              children: <Widget>[
+                                                for (int i = 1;
+                                                    i <= widget.book.pages;
+                                                    ++i)
+                                                  Center(
+                                                      child: Text(
+                                                    "$i",
+                                                    style:
+                                                        MyTextStyle.bigHeadline,
+                                                  )),
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
                                     )).then((val) {
-                              BlocProvider.of<BlocHomeScreen>(context)
-                                  .add(EventBookUpdate(myBook: widget.book));
-                              setState(() {});
+                              //Bottom Sheet Closed
+                              if (widget.book.currentPage ==
+                                  widget.book.pages) {
+                                //If book finished ask if really wants to finish book
+                                _showBookFinishDialog(widget.book, context);
+                              }
+                              //If book not finished simply update
+                              else {
+                                BlocProvider.of<BlocHomeScreen>(context)
+                                    .add(EventBookUpdate(myBook: widget.book));
+                                setState(() {});
+                              }
                             }); //After Closed Call Bloc and Update Screen
                           },
                         ),
@@ -107,8 +164,9 @@ class _bigBookTileState extends State<bigBookTile> {
                   ),
                 ),
                 //Minus Button
-                Align(alignment: Alignment.bottomLeft,
-                                  child: RaisedButton(
+                Align(
+                  alignment: Alignment.bottomLeft,
+                  child: RaisedButton(
                       onPressed: () {
                         if (widget.book.currentPage > 1) {
                           widget.book.currentPage--;
@@ -124,12 +182,14 @@ class _bigBookTileState extends State<bigBookTile> {
                       shape: CircleBorder()),
                 ),
                 //Plus Button
-                 Align(
-                   alignment: Alignment.bottomRight,
-                                    child: RaisedButton(
-                                      
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: RaisedButton(
                       onPressed: () {
-                        if (widget.book.currentPage < widget.book.pages) {
+                        if (widget.book.currentPage == widget.book.pages - 1) {
+                          _showBookFinishDialog(widget.book, context);
+                        } else if (widget.book.currentPage <
+                            widget.book.pages) {
                           widget.book.currentPage++;
                           BlocProvider.of<BlocHomeScreen>(context)
                               .add(EventBookUpdate(myBook: widget.book));
@@ -141,7 +201,7 @@ class _bigBookTileState extends State<bigBookTile> {
                         style: MyTextStyle.iconStyle,
                       ),
                       shape: CircleBorder()),
-                 ),
+                ),
               ],
             )
           ],

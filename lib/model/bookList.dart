@@ -155,5 +155,14 @@ class BookListProvider {
 
   }
 
+  Future finishBook(int Id)async{
+    try{
+      await db.update('book_list', {'isRead': 1}, where: 'bookId = ?', whereArgs: [Id]);
+    }
+    catch(err){
+      log(err.toString());
+    }
+  }
+
   Future closeDB() async => db.close();
 }

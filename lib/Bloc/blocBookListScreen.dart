@@ -23,7 +23,7 @@ class BlocBookList extends Bloc<BookListEvents, BookListStates>{
       List<Book> books=await repository.getAllBooksSorted();
       yield ShowData(books: books);
     }
-    else if (event is EventChangePosition){
+    else if (event is EventChangePosition){  //Change Position when Book is moved in List
       await repository.updatePosition(event.bookList);
     }
     else if (event is EventDeleteBook){
