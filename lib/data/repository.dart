@@ -208,12 +208,19 @@ class MainRepository {
   }
 
   Future finishBook(Book mybook)async{
-    if(statisticDB.db==null) await statisticDB.open();
+    if(bookListDB.db==null) await statisticDB.open();
     if(bookDB.db==null) await bookDB.open();
     mybook.isRead=true;
     //Update book no need to await
     bookDB.updateBook(mybook);
     bookListDB.finishBook(mybook.id);
+  }
+
+  Future updateTodaysToRead(int newPages)async{
+    if(statisticDB.db==null) await statisticDB.open();
+    String date= DateTime.now().toString().substring(0, 10);
+    await  statisticDB.updateTodaysStatistic(date, newPages);
+
   }
 
 //This Logic is to Create Singleton

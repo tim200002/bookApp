@@ -77,6 +77,15 @@ class StatisticProvider{
     return await db.update("statistic", statistic.toMap(),where: 'date = ?',whereArgs: [statistic.date]);
   }
 
+  Future updateTodaysStatistic(String date, int newPages)async{
+    int currentPages=(await getStatisticByDate(date)).pagesToRead;
+    int pagesToRead=currentPages+newPages;
+    if(pagesToRead<0) pagesToRead=0;
+    log(pagesToRead.toString());
+    var num=await db.update("statistic", {'pagesToRead': pagesToRead},where: 'date = ?',whereArgs: [date]);
+    log(num.toString());
+  }
+
     Future<int> deleteAll()async{
     return await db.delete("statistic");
   }

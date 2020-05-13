@@ -22,7 +22,10 @@ class BlocNewBook extends Bloc<NewBookEvents, NewBookStates>{
 
     //Lookup Book and Add it to the DB, later not directly add it
     if (event is EventLookForBook){
-     repository.addBookByIsbn(event.ISBN);
+     int pages=(await repository.addBookByIsbn(event.ISBN)).pages;
+     pages=pages~/365;
+     if (pages==0) pages=1;
+     await repository.updateTodaysToRead(pages);
     }
     //Gets Deleted later
     if (event is TestEvent){

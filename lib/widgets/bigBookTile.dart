@@ -41,7 +41,13 @@ class _bigBookTileState extends State<bigBookTile> {
               ),
               FlatButton(
                 child: Text("I am still reading"),
-                onPressed: () {},
+                onPressed: () {
+                  book.currentPage=book.pages-1;
+                  BlocProvider.of<BlocHomeScreen>(blocContext)
+                                    .add(EventBookUpdate(myBook: widget.book));
+                                setState(() {});
+                  Navigator.pop(context);
+                },
               )
             ],
           );

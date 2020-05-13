@@ -23,7 +23,6 @@ class BlocHomeScreen extends Bloc<HomeEvents, HomeStates> {
       List<Book> books = await repository.getAllBooksSorted();
       String date = DateTime.now().toString().substring(0, 10); //Format Date Time in Format used in Database
       Statistic statistic = await repository.getStatisticsByDate(date); //Call to Statisitc Database to look how many pages already read and have to Read
-
       //Case New Day -> No Statistic for Current Day
       if (statistic == null) {
         //Add Element with Pages to Read -> Oages To Read = All Pages / Days left in the Year
