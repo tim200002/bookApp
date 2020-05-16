@@ -1,5 +1,6 @@
 import 'package:book_app/Bloc/BasicNavigationBloc.dart';
 import 'package:book_app/Bloc/BlocHomeScreen.dart';
+import 'package:book_app/Bloc/MainScreenTopBloc.dart';
 import 'package:book_app/Bloc/blocBookListScreen.dart';
 import 'package:book_app/Styling/colors.dart';
 import 'package:book_app/screens/ListScreen.dart';
@@ -25,8 +26,17 @@ class MyApp extends StatelessWidget {
             child: BlocBuilder<BasicNavigationBloc, NavigationStates>(
               builder: (context, state) {
                 if (state is StateMainScreen) {
-                  return BlocProvider(
-                      create: (BuildContext context) => BlocHomeScreen(),
+                  return MultiBlocProvider(
+
+                    providers: [
+                      BlocProvider<BlocHomeScreen>(
+                        create: (BuildContext context) => BlocHomeScreen(),
+                      ),
+                      BlocProvider<BlocMainScreenTop>(
+                        create: (BuildContext context)=> BlocMainScreenTop(),
+                      )
+                    ],
+                      
                       child: HomeScreen());
                 }
                 //Show Detail Screen
