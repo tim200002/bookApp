@@ -51,7 +51,7 @@ class BookListProvider {
   id integer primary key autoincrement,
   bookId integer,
   position integer,
-  isRead integer 
+  isRead integer) 
 ''');
     });
   }
