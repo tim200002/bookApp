@@ -27,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (context, state) {
         if (state is Loading) {
           _blocHomeScreen.add(EventLoadData());
-          return Scaffold(body: Text("Loading 3"));
+          return Scaffold(body: Center(child: CircularProgressIndicator()));
         } else if (state is ShowData) {
           return Scaffold(
             appBar: AppBar(
@@ -35,15 +35,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 backgroundColor:
                     MyColors.backgroundGrey), //At The Moment for App Drawer
             drawer: Drawer(
+
               child: SafeArea(
                 child: Column(
                   children: <Widget>[
                     FlatButton(
-                      child: Text("Page 1"),
+                      child: Text("Home"),
                       onPressed: () {},
                     ),
                     FlatButton(
-                      child: Text("Page 2"),
+                      child: Text("Book List"),
                       onPressed: () {
                         Navigator.pop(context);
                         BlocProvider.of<BasicNavigationBloc>(context)
@@ -61,8 +62,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       helperBloc.BlocMainTopStates>(
                     builder: (context, state) {
                       if (state is helperBloc.Loading) {
-                        BlocProvider.of<helperBloc.BlocMainScreenTop>(context).add(helperBloc.EventShowData());
-                        return Text("Loading");
+                        BlocProvider.of<helperBloc.BlocMainScreenTop>(context)
+                            .add(helperBloc.EventShowData());
+                        return Center(child: CircularProgressIndicator());
                       } else if (state is helperBloc.Loaded) {
                         return Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -79,21 +81,30 @@ class _HomeScreenState extends State<HomeScreen> {
                                   padding: const EdgeInsets.all(4.0),
                                   child: Text(
                                     "You have to read",
-                                    style: MyTextStyle.mediumHeadline,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 18,
+                                        color: Colors.black),
                                   ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(.0),
                                   child: Text(
                                     state.pagesToRead.toString(),
-                                    style: MyTextStyle.bigHeadline,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 22,
+                                        color: Colors.black),
                                   ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(4.0),
                                   child: Text(
                                     "Pages Today",
-                                    style: MyTextStyle.mediumHeadline,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 18,
+                                        color: Colors.black),
                                   ),
                                 ),
                               ],

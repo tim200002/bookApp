@@ -26,16 +26,23 @@ class _ListScreenState extends State<ListScreen> {
       builder: (context, state) {
         if (state is Loading) {
           _blocBookList.add(EventLoadData());
-          return Scaffold(body: Text("Loading"));
+          return Scaffold(body: Center(child: CircularProgressIndicator()));
         } else if (state is ShowData) {
           return Scaffold(
-            appBar: AppBar(elevation: 0.0,backgroundColor: MyColors.backgroundGrey), //At the Moment Necessary for Drawe
+            appBar: AppBar(
+              elevation: 0.0,
+              backgroundColor: MyColors.backgroundGrey,
+              title: Text(
+                "Order Your Library",
+                style: MyTextStyle.bigHeadline,
+              ),
+            ), //At the Moment Necessary for Drawe
             drawer: Drawer(
               child: SafeArea(
-                              child: Column(
+                child: Column(
                   children: <Widget>[
                     FlatButton(
-                      child: Text("Page 1"),
+                      child: Text("Home"),
                       onPressed: () {
                         Navigator.pop(context);
                         BlocProvider.of<BasicNavigationBloc>(context)
@@ -43,7 +50,7 @@ class _ListScreenState extends State<ListScreen> {
                       },
                     ),
                     FlatButton(
-                      child: Text("Page 2"),
+                      child: Text("Book List"),
                       onPressed: () {
                         Navigator.pop(context);
                       },
@@ -55,16 +62,6 @@ class _ListScreenState extends State<ListScreen> {
             body: SafeArea(
               child: Column(
                 children: <Widget>[
-                  //Headline
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10.0),
-                    child: Text(
-                      "Order Your Library",
-                      style: MyTextStyle.bigHeadline,
-                    ),
-                  ),
-                  //Scrollabe List
-
                   //! Wont Go with cupertino
                   Expanded(
                     child: ReorderableListView(
@@ -81,9 +78,10 @@ class _ListScreenState extends State<ListScreen> {
                         if (oldIndex > newIndex) {
                           state.books.removeAt(oldIndex + 1);
                         } else if (oldIndex < newIndex) {
-                          state.books.removeAt(oldIndex );
+                          state.books.removeAt(oldIndex);
                         }
-                        _blocBookList.add(EventChangePosition(bookList: state.books));
+                        _blocBookList
+                            .add(EventChangePosition(bookList: state.books));
                         //? Dont know if nice but at the moment needed to show change in list
                         setState(() {});
                       },
@@ -106,8 +104,9 @@ class _ListScreenState extends State<ListScreen> {
                               );
                             },
                           ),
-                        ).then((value){
-                          _blocBookList.add(EventLoadData()); //Load updatetd data when return to screen
+                        ).then((value) {
+                          _blocBookList.add(
+                              EventLoadData()); //Load updatetd data when return to screen
 
                           //Mybe better without extra call to DB
                           //return added Book an Manually add it to bookList, then setState
