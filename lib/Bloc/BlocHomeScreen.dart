@@ -17,25 +17,13 @@ class BlocHomeScreen extends Bloc<HomeEvents, HomeStates> {
   @override
   Stream<HomeStates> mapEventToState(HomeEvents event) async* {
     if (event is EventLoadData) {
-      int readLeft; //Couter for how much to Read today
       yield Loading();
       //Repository Function which returns List of all the Books
       List<Book> books = await repository.getAllBooksSorted();
-      String date = DateTime.now().toString().substring(0, 10); //Format Date Time in Format used in Database
-      Statistic statistic = await repository.getStatisticsByDate(date); //Call to Statisitc Database to look how many pages already read and have to Read
-      //Case New Day -> No Statistic for Current Day
-      if (statistic == null) {
-        //Add Element with Pages to Read -> Oages To Read = All Pages / Days left in the Year
-        statistic =await repository.addStatisticWithPagesToRead((await repository.getTodaysPagesToRead())[1]);
-      } 
-      // Not all Pages Read for Today
-      if (statistic.pagesRead < statistic.pagesToRead)
-        readLeft = statistic.pagesToRead - statistic.pagesRead;
-      else //Dont want negative Counter
-        readLeft = 0;
+     
 
       //End Show Screen
-      yield ShowData(books: books, pagesOpen: readLeft);
+      yield ShowData(books: books);
     }
 
     //Update the Pages Read today

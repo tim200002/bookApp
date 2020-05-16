@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:book_app/Bloc/BlocHomeScreen.dart';
+import 'package:book_app/Bloc/MainScreenTopBloc.dart';
 import 'package:book_app/Event/EventHomeScreen.dart';
 import 'package:book_app/State/StateHomeScreen.dart';
 import 'package:book_app/Styling/TextStyling.dart';
@@ -42,10 +43,10 @@ class _bigBookTileState extends State<bigBookTile> {
               FlatButton(
                 child: Text("I am still reading"),
                 onPressed: () {
-                  book.currentPage=book.pages-1;
+                  book.currentPage = book.pages - 1;
                   BlocProvider.of<BlocHomeScreen>(blocContext)
-                                    .add(EventBookUpdate(myBook: widget.book));
-                                setState(() {});
+                      .add(EventBookUpdate(myBook: widget.book));
+                  setState(() {});
                   Navigator.pop(context);
                 },
               )
@@ -158,8 +159,8 @@ class _bigBookTileState extends State<bigBookTile> {
                               }
                               //If book not finished simply update
                               else {
-                                BlocProvider.of<BlocHomeScreen>(context)
-                                    .add(EventBookUpdate(myBook: widget.book));
+                                BlocProvider.of<BlocMainScreenTop>(context)
+                                    .add(EventUpdateData(myBook: widget.book));
                                 setState(() {});
                               }
                             }); //After Closed Call Bloc and Update Screen
@@ -176,8 +177,8 @@ class _bigBookTileState extends State<bigBookTile> {
                       onPressed: () {
                         if (widget.book.currentPage > 1) {
                           widget.book.currentPage--;
-                          BlocProvider.of<BlocHomeScreen>(context)
-                              .add(EventBookUpdate(myBook: widget.book));
+                          BlocProvider.of<BlocMainScreenTop>(context)
+                              .add(EventUpdateData(myBook: widget.book));
                           setState(() {});
                         }
                       },
@@ -197,9 +198,11 @@ class _bigBookTileState extends State<bigBookTile> {
                         } else if (widget.book.currentPage <
                             widget.book.pages) {
                           widget.book.currentPage++;
-                          BlocProvider.of<BlocHomeScreen>(context)
-                              .add(EventBookUpdate(myBook: widget.book));
-                          setState(() {});
+                          setState(() {
+                            
+                          });
+                          BlocProvider.of<BlocMainScreenTop>(context)
+                              .add(EventUpdateData(myBook: widget.book));
                         }
                       },
                       child: Text(

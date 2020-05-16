@@ -61,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       helperBloc.BlocMainTopStates>(
                     builder: (context, state) {
                       if (state is helperBloc.Loading) {
-                        BlocProvider.of<helperBloc.BlocMainScreenTop>(context).add(helperBloc.EventUpdateData());
+                        BlocProvider.of<helperBloc.BlocMainScreenTop>(context).add(helperBloc.EventShowData());
                         return Text("Loading");
                       } else if (state is helperBloc.Loaded) {
                         return Padding(
